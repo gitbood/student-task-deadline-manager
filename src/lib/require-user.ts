@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/lib/auth";
 
-export default async function Home() {
+export async function requireUser() {
   const session = await getServerAuthSession();
 
-  if (session?.user?.id) {
-    redirect("/dashboard");
+  if (!session?.user?.id) {
+    redirect("/auth/login");
   }
 
-  redirect("/auth/login");
+  return session.user;
 }

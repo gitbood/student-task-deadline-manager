@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Student Task & Deadline Manager
 
-## Getting Started
+Beginner-friendly web app to manage:
+- user accounts (register/login)
+- courses
+- assignments with due dates, priority, and status
+- dashboard sections for upcoming, overdue, and completed work
+- assignment filters by course, status, and priority
 
-First, run the development server:
+## Tech Stack
+- Next.js (App Router + TypeScript)
+- Prisma ORM + SQLite
+- NextAuth (Credentials provider)
+- bcrypt password hashing
+- Zod validation
+- Tailwind CSS
+- Vitest (unit + minimal integration-style tests)
 
+## Prerequisites
+- Node.js `18.19+` (or newer)
+- npm
+
+## Setup
+1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create env file
+```bash
+cp .env.example .env
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set a secure auth secret in `.env`
+```env
+NEXTAUTH_SECRET="replace-with-a-long-random-secret"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Run Prisma migration (creates SQLite DB)
+```bash
+npm run prisma:migrate -- --name init
+```
 
-## Learn More
+5. Start the app
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Default Environment Variables
+```env
+DATABASE_URL="file:./dev.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-with-a-long-random-secret"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
+- `npm run dev` - start local dev server
+- `npm run lint` - run ESLint
+- `npm test` - run Vitest tests
+- `npm run build` - production build check
+- `npm run prisma:migrate -- --name <name>` - create/apply Prisma migration
+- `npm run prisma:generate` - regenerate Prisma client
+- `npm run prisma:studio` - open Prisma Studio
 
-## Deploy on Vercel
+## Test Coverage Included
+- Unit: upcoming/overdue date logic
+- Integration-style: create assignment and mark it done in DB
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Auth + Data Safety Notes
+- Protected pages: `/dashboard`, `/courses`, `/courses/[id]`
+- All course/assignment queries and mutations are scoped to the current user ID
+- Passwords are hashed with `bcryptjs` before storage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Main Routes
+- `/auth/register`
+- `/auth/login`
+- `/dashboard`
+- `/courses`
+- `/courses/[id]`

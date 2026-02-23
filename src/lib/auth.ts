@@ -4,10 +4,16 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
+type UserRole = "ADMIN" | "STUDENT";
+
 const signInSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
+
+function normalizeRole(role: string | null | undefined): UserRole {
+  return role === "ADMIN" ? "ADMIN" : "STUDENT";
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -50,15 +56,27 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
+          role: normalizeRole(user.role),
         };
       },
     }),
   ],
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = normalizeRole(user.role);
+      } else {
+        token.role = normalizeRole(token.role);
+      }
+
+      return token;
+    },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub ?? "";
+        session.user.id = token.id ?? token.sub ?? "";
         session.user.email = token.email ?? "";
+        session.user.role = normalizeRole(token.role);
       }
 
       return session;

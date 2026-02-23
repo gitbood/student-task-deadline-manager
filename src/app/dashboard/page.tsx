@@ -123,6 +123,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           success={searchParams.success}
         />
 
+        <p className="text-sm font-medium text-slate-700">
+          Role: <span className="font-semibold text-slate-900">{user.role}</span>
+        </p>
+
         <section className="grid gap-3 md:grid-cols-3">
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <p className="text-sm text-slate-500">Upcoming (next 7 days)</p>

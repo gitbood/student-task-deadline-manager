@@ -41,7 +41,12 @@ NEXTAUTH_SECRET="replace-with-a-long-random-secret"
 npm run prisma:migrate -- --name init
 ```
 
-5. Start the app
+5. Seed demo users (idempotent)
+```bash
+npm run db:seed
+```
+
+6. Start the app
 ```bash
 npm run dev
 ```
@@ -53,6 +58,7 @@ Open `http://localhost:3000`.
 DATABASE_URL="file:./dev.db"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="replace-with-a-long-random-secret"
+DEMO_PASSWORD="DemoPass123!"
 ```
 
 ## Available Scripts
@@ -60,6 +66,7 @@ NEXTAUTH_SECRET="replace-with-a-long-random-secret"
 - `npm run lint` - run ESLint
 - `npm test` - run Vitest tests
 - `npm run build` - production build check
+- `npm run db:seed` - create/update local demo accounts
 - `npm run prisma:migrate -- --name <name>` - create/apply Prisma migration
 - `npm run prisma:generate` - regenerate Prisma client
 - `npm run prisma:studio` - open Prisma Studio
@@ -72,6 +79,14 @@ NEXTAUTH_SECRET="replace-with-a-long-random-secret"
 - Protected pages: `/dashboard`, `/courses`, `/courses/[id]`
 - All course/assignment queries and mutations are scoped to the current user ID
 - Passwords are hashed with `bcryptjs` before storage
+
+## Test Accounts
+Demo accounts are for local development only. Change `DEMO_PASSWORD` in `.env.local`.
+
+| Email | Password | Role | Notes |
+| --- | --- | --- | --- |
+| `admin@demo.local` | `DEMO_PASSWORD` (default local fallback: `DemoPass123!`) | `ADMIN` | Can sign in as demo admin. Role is visible on Dashboard and in session/JWT. |
+| `student@demo.local` | `DEMO_PASSWORD` (default local fallback: `DemoPass123!`) | `STUDENT` | Can sign in as demo student. Role is visible on Dashboard and in session/JWT. |
 
 ## Main Routes
 - `/auth/register`
